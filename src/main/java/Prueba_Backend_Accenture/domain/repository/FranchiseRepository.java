@@ -1,4 +1,4 @@
-package Prueba_Backend_Accenture.infratructure.persistence.repository;
+package Prueba_Backend_Accenture.domain.repository;
 
 import Prueba_Backend_Accenture.domain.model.Franchise;
 import reactor.core.publisher.Flux;
