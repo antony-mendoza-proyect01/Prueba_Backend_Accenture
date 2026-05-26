@@ -1,25 +1,34 @@
-Franchise API — Prueba Técnica Accenture
-API reactiva para gestión de franquicias, sucursales y productos.
-Construida con Java 17 · Spring Boot 3 · WebFlux · R2DBC · MySQL · Docker · Terraform (AWS).
+# Franchise API — Prueba Técnica Accenture
+
+API reactiva para gestión de franquicias, sucursales y productos.  
+Construida con **Java 17 · Spring Boot 3 · WebFlux · R2DBC · MySQL · Docker · Terraform (AWS)**.
 
 
+ API : DESPLEGADA : http://3.239.45.141:8080/swagger-ui/index.html#/
 
- Tabla de Contenidos
+---
 
-Arquitectura
-Tecnologías y Dependencias
-Requisitos Previos
-Despliegue con Docker
-Despliegue Local sin Docker
-Documentación Swagger
-Endpoints
-Ejemplos de Peticiones
-Tests Unitarios
-Despliegue en AWS con Terraform
-Criterios Cumplidos
+##  Tabla de Contenidos
 
-Arquitectura
-El proyecto sigue Clean Architecture con separación estricta en capas:
+- [Arquitectura](#arquitectura)
+- [Tecnologías y Dependencias](#tecnologías-y-dependencias)
+- [Requisitos Previos](#requisitos-previos)
+- [Despliegue con Docker](#despliegue-con-docker-recomendado)
+- [Despliegue Local sin Docker](#despliegue-local-sin-docker)
+- [Documentación Swagger](#documentación-swagger)
+- [Endpoints](#endpoints-de-la-api)
+- [Ejemplos de Peticiones](#ejemplos-de-peticiones)
+- [Tests Unitarios](#tests-unitarios)
+- [Despliegue en AWS con Terraform](#despliegue-en-aws-con-terraform)
+- [Criterios Cumplidos](#criterios-cumplidos)
+
+---
+
+##  Arquitectura
+
+El proyecto sigue **Clean Architecture** con separación estricta en capas:
+
+```
 src/main/java/
 └── com/accenture/franchise/
     ├── domain/                        # Núcleo — sin dependencias externas
@@ -40,47 +49,76 @@ src/main/java/
     │   └── config/                    # Configuración Swagger, WebFlux
     │
     └── shared/exception/              # Manejo global de errores
+```
 
+**Flujo de dependencias:** `Infrastructure → Application → Domain`  
+El dominio no depende de ninguna capa externa.
 
-    Requisitos Previos
-Para Docker (recomendado)
+---
 
-Docker Desktop instalado y corriendo
-Git
+## 🛠️ Tecnologías y Dependencias
 
-Para ejecución local
+| Dependencia | Versión | Propósito |
+|---|---|---|
+| `spring-boot-starter-webflux` | 3.x | Web reactiva con Netty |
+| `spring-boot-starter-data-r2dbc` | 3.x | Acceso reactivo a BD |
+| `r2dbc-mysql` (io.asyncer) | 1.1.0 | Driver R2DBC para MySQL 8 |
+| `mysql-connector-j` | 8.x | Driver JDBC para Flyway |
+| `flyway-core` + `flyway-mysql` | — | Migraciones automáticas de esquema |
+| `spring-boot-starter-validation` | 3.x | Validaciones en DTOs |
+| `spring-boot-starter-actuator` | 3.x | Health endpoint |
+| `springdoc-openapi-starter-webflux-ui` | 2.5.0 | Documentación Swagger UI |
+| `reactor-test` | — | StepVerifier para tests reactivos |
+| `r2dbc-h2` + `h2` | — | BD en memoria para tests |
 
-Java 17+
-Maven 3.8+
-MySQL 8.0
+---
 
-Para despliegue en AWS
+##  Requisitos Previos
 
-Terraform >= 1.5
-AWS CLI configurado
+### Para Docker (recomendado)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado y corriendo
+- Git
 
-Despliegue con Docker (recomendado)
+### Para ejecución local
+- Java 17+
+- Maven 3.8+
+- MySQL 8.0
+
+### Para despliegue en AWS
+- [Terraform >= 1.5](https://developer.hashicorp.com/terraform/downloads)
+- [AWS CLI](https://aws.amazon.com/cli/) configurado
+
+---
+
+##  Despliegue con Docker (recomendado)
+
 La forma más sencilla de correr el proyecto. No necesitas MySQL instalado localmente.
 
+```bash
 # 1. Clonar el repositorio
-git clone : https://github.com/antony-mendoza-proyect01/Prueba_Backend_Accenture.git
+git clone https://github.com/<tu-usuario>/franchise-api.git
 cd franchise-api
 
 # 2. Levantar MySQL + API con Docker Compose
 docker-compose up --build
+```
 
 Docker Compose levanta automáticamente:
+- **MySQL 8.0** en el puerto `3307` (externo) / `3306` (interno)
+- **franchise-api** en el puerto `8080` (espera a que MySQL esté listo con healthcheck)
 
-MySQL 8.0 en el puerto 3307 (externo) / 3306 (interno)
-franchise-api en el puerto 8080 (espera a que MySQL esté listo con healthcheck)
-
-La API estará disponible en: http://localhost:8080
+La API estará disponible en: `http://localhost:8080`
 
 Para detener:
-bashdocker-compose down
+```bash
+docker-compose down
+```
 
-Despliegue Local sin Docker
+---
 
+##  Despliegue Local sin Docker
+
+```bash
 # 1. Crear la base de datos en MySQL
 mysql -u root -p -e "CREATE DATABASE franchise_db;"
 
@@ -92,34 +130,67 @@ mvn clean package -DskipTests
 
 # 4. Ejecutar
 java -jar target/*.jar
+```
 
 O directamente desde IntelliJ con estas variables de entorno en Run Configuration:
+```
 DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=franchise_db
 DB_USER=root
 DB_PASSWORD=tu_password
+```
 
+---
 
-Documentación Swagger
+##  Documentación Swagger
+
 Con la aplicación corriendo, accede a:
+
+```
 http://localhost:8080/swagger-ui.html
+```
+
 La documentación está organizada en 3 grupos:
+- **Franquicias** — CRUD de franquicias
+- **Sucursales** — gestión de sucursales por franquicia
+- **Productos** — gestión de productos por sucursal
 
-Franquicias — CRUD de franquicias
-Sucursales — gestión de sucursales por franquicia
-Productos — gestión de productos por sucursal
+---
 
+##  Endpoints de la API
 
-Base URL: http://localhost:8080/api/v1
-Franquicias
-MétodoRutaDescripciónBodyPOST/franchisesCrear franquicia{"name": "string"}GET/franchisesListar todas—GET/franchises/{id}Obtener por ID—PATCH/franchises/{id}/nameActualizar nombre{"name": "string"}
-Sucursales
-MétodoRutaDescripciónBodyPOST/branchesCrear sucursal{"name": "string", "franchiseId": 1}GET/franchises/{franchiseId}/branchesSucursales de una franquicia—PATCH/branches/{id}/nameActualizar nombre{"name": "string"}
-Productos
-MétodoRutaDescripciónBodyPOST/productsCrear producto{"name": "string", "stock": 0, "branchId": 1}DELETE/products/{id}Eliminar producto—PATCH/products/{id}/stockModificar stock{"stock": 100}PATCH/products/{id}/nameActualizar nombre{"name": "string"}GET/franchises/{franchiseId}/top-stock-productsProducto con más stock por sucursal—
+Base URL: `http://localhost:8080/api/v1`
 
-Ejemplos de Peticiones
+### Franquicias
+| Método | Ruta | Descripción | Body |
+|--------|------|-------------|------|
+| `POST` | `/franchises` | Crear franquicia | `{"name": "string"}` |
+| `GET` | `/franchises` | Listar todas | — |
+| `GET` | `/franchises/{id}` | Obtener por ID | — |
+| `PATCH` | `/franchises/{id}/name` | Actualizar nombre | `{"name": "string"}` |
+
+### Sucursales
+| Método | Ruta | Descripción | Body |
+|--------|------|-------------|------|
+| `POST` | `/branches` | Crear sucursal | `{"name": "string", "franchiseId": 1}` |
+| `GET` | `/franchises/{franchiseId}/branches` | Sucursales de una franquicia | — |
+| `PATCH` | `/branches/{id}/name` | Actualizar nombre | `{"name": "string"}` |
+
+### Productos
+| Método | Ruta | Descripción | Body |
+|--------|------|-------------|------|
+| `POST` | `/products` | Crear producto | `{"name": "string", "stock": 0, "branchId": 1}` |
+| `DELETE` | `/products/{id}` | Eliminar producto | — |
+| `PATCH` | `/products/{id}/stock` | Modificar stock | `{"stock": 100}` |
+| `PATCH` | `/products/{id}/name` | Actualizar nombre | `{"name": "string"}` |
+| `GET` | `/franchises/{franchiseId}/top-stock-products` | Producto con más stock por sucursal | — |
+
+---
+
+## 📋 Ejemplos de Peticiones
+
+```bash
 # Crear franquicia
 curl -X POST http://localhost:8080/api/v1/franchises \
   -H "Content-Type: application/json" \
@@ -158,18 +229,31 @@ curl http://localhost:8080/api/v1/franchises/1/top-stock-products
 curl -X PATCH http://localhost:8080/api/v1/franchises/1/name \
   -H "Content-Type: application/json" \
   -d '{"name": "Burger King Colombia"}'
+```
 
+---
 
-  Tests Unitarios
+##  Tests Unitarios
 
-  mvn test
+```bash
+mvn test
+```
 
-  Los tests cubren los casos de uso con StepVerifier de Project Reactor:
-TestCasos cubiertosFranchiseUseCaseTestCrear, obtener, listar, actualizar nombre, not foundBranchUseCaseTestCrear, actualizar nombre, franquicia no encontradaProductUseCaseTestCrear, eliminar, actualizar stock, top stock por franquicia
+Los tests cubren los casos de uso con `StepVerifier` de Project Reactor:
 
+| Test | Casos cubiertos |
+|---|---|
+| `FranchiseUseCaseTest` | Crear, obtener, listar, actualizar nombre, not found |
+| `BranchUseCaseTest` | Crear, actualizar nombre, franquicia no encontrada |
+| `ProductUseCaseTest` | Crear, eliminar, actualizar stock, top stock por franquicia |
 
-Despliegue en AWS con Terraform
-Infraestructura creada
+---
+
+##  Despliegue en AWS con Terraform
+
+### Infraestructura creada
+
+```
 AWS
 ├── VPC (10.0.0.0/16)
 │   ├── Subnet pública A (us-east-1a)
@@ -182,7 +266,11 @@ AWS
 │   └── Task Definition + Service
 ├── IAM Role (ECS Task Execution)
 └── CloudWatch Log Group
+```
 
+### Pasos
+
+```bash
 # 1. Configurar AWS CLI
 aws configure
 
@@ -210,24 +298,37 @@ terraform apply \
 terraform destroy \
   -var="db_password=MiPassword123!" \
   -var="ecr_image_uri=<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/franchise-api:latest"
+```
 
-  Criterios Cumplidos
-1.	El proyecto debe ser desarrollado en Sprint Boot
-2.	Exponer endpoint para agregar una nueva franquicia
-3.	Exponer endpoint para agregar una nueva sucursal a la franquicia
-4.	Exponer endpoint para agregar un nuevo producto a la sucursal
-5.	Exponer endpoint para eliminar un nuevo producto a una sucursal
-6.	Exponer endpoint para modificar un Stock de un nuevo producto
-7.	Exponer endpoint para agregar que permita mostrar cual es el producto que más stock tiene por sucursal para una franquicia puntual. Debe retoma un listado de productos que indiquen a que sucursal pertenece.
-8.	Utilizar sistemas de persistencia de datos como Redis, MySql, Mongo BD, Dynamo en algún proveedor de nube. Ǫueda abierto a libre escogencia.
-Puntos extra:
-•	Plus si se empaqueta una aplicación con Docker
-•	Plus si se utilizar una programación funcional, reactiva. Ǫueda abierto a libre escogencia.
-•	Plus si se expone endpoint que permita actualizar el nombre de la franquicia.
-•	Plus si se expone endpoint que permita actualizar el nombre de la sucursal.
-•	Plus si se expone endpoint que permita actualizar el nombre del producto.
-•	Plus si se aproviciona la persistencia de datos como infraestructura como código como Terrafom, Cloudformation, etc. Ǫueda a libre escogencia.
-•	Plus si toda la solución se despliega en la nube
- se cumplio con todos los criterios 
+---
 
- API : DESPLEGADA : http://3.239.45.141:8080/swagger-ui/index.html#/
+##  Criterios Cumplidos
+
+| Criterio | Estado | Detalle |
+|---|---|---|
+| Spring Boot | ✅ | Spring Boot 3.x con WebFlux |
+| Programación reactiva | ✅ | Mono/Flux en toda la cadena, R2DBC, Netty |
+| Agregar franquicia | ✅ | `POST /api/v1/franchises` |
+| Agregar sucursal | ✅ | `POST /api/v1/branches` |
+| Agregar producto | ✅ | `POST /api/v1/products` |
+| Eliminar producto | ✅ | `DELETE /api/v1/products/{id}` |
+| Modificar stock | ✅ | `PATCH /api/v1/products/{id}/stock` |
+| Top stock por sucursal | ✅ | `GET /api/v1/franchises/{id}/top-stock-products` |
+| Persistencia MySQL | ✅ | R2DBC + Flyway migrations |
+| Docker | ✅ | Dockerfile multi-stage + docker-compose |
+| Unit Tests | ✅ | 13 tests con StepVerifier |
+| Infrastructure as Code | ✅ | Terraform — AWS RDS + ECS Fargate |
+| Clean Architecture | ✅ | Domain / Application / Infrastructure |
+| Actualizar nombre franquicia | ✅ ⭐ | `PATCH /api/v1/franchises/{id}/name` |
+| Actualizar nombre sucursal | ✅ ⭐ | `PATCH /api/v1/branches/{id}/name` |
+| Actualizar nombre producto | ✅ ⭐ | `PATCH /api/v1/products/{id}/name` |
+| Swagger UI | ✅ ⭐ | `http://localhost:8080/swagger-ui.html` |
+
+---
+
+##  Autor
+
+**Antony Mendoza**  
+Prueba técnica Backend — Accenture
+correo: antoni-6191@hotmail.com
+
