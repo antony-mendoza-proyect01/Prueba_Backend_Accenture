@@ -42,7 +42,6 @@ src/main/java/
     └── shared/exception/              # Manejo global de errores
 
 
-
     Requisitos Previos
 Para Docker (recomendado)
 
