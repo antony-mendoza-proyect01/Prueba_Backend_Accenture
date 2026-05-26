@@ -31,3 +31,26 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Maven
+target/
+*.class
+
+# Terraform — NO subir providers ni binarios
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.exe
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.tfstate.lock.info
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Logs
+*.log
+
+# Variables con credenciales
+*.tfvars
