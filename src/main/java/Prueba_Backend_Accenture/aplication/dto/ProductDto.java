@@ -1,5 +1,6 @@
 package Prueba_Backend_Accenture.aplication.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ public class ProductDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(name = "ProductCreateRequest")
     public static class CreateRequest {
         @NotBlank(message = "Product name is required")
         private String name;
@@ -27,6 +29,7 @@ public class ProductDto {
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    @Schema(name = "ProductUpdateStockRequest")
     public static class UpdateStockRequest {
         @NotNull(message = "Stock is required")
         @Min(value = 0, message = "Stock must be >= 0")
@@ -34,12 +37,14 @@ public class ProductDto {
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    @Schema(name = "ProductUpdateNameRequest")
     public static class UpdateNameRequest {
         @NotBlank(message = "Name is required")
         private String name;
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    @Schema(name = "ProductResponse")
     public static class Response {
         private Long id;
         private String name;
@@ -48,6 +53,7 @@ public class ProductDto {
     }
 
     @Data @Builder @NoArgsConstructor @AllArgsConstructor
+    @Schema(name = "TopStockResponse")
     public static class TopStockResponse {
         private Long productId;
         private String productName;

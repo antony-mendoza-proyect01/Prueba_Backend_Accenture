@@ -35,7 +35,7 @@ public class FranchiseController {
     @PostMapping("/franchises")
     public Mono<FranchiseDto.Response> createFranchise(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Datos de la franquicia",
+                    description = "Nombre de la franquicia",
                     content = @io.swagger.v3.oas.annotations.media.Content(
                             schema = @io.swagger.v3.oas.annotations.media.Schema(
                                     implementation = FranchiseDto.CreateRequest.class)))
