@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: franchise-api
+
+  r2dbc:
+    url: r2dbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:franchise_db}?serverZoneId=America/Bogota
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:12345}
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30m
+
+  flyway:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:franchise_db}?connectionTimeZone=America/Bogota
+    user: ${DB_USER:root}
+    password: ${DB_PASSWORD:12345}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    repair-on-migrate: true
+
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  webjars:
+    prefix: ""
+  packages-to-scan: Prueba_Backend_Accenture
+  paths-to-match: /api/v1/**
